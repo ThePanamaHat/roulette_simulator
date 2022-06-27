@@ -1,2 +1,2 @@
-python-progressbar==2.5
+git+https://github.com/NiltonVolpato/python-progressbar.git
 scipy==1.7.1
