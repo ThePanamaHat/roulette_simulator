@@ -1,15 +1,17 @@
+#By ThePanamaHat - email me: thepanamahat (at) pm (dot) me
+
 #To do list:
 	
 	#Fix so non-intigers don't crash program
-	#Remove outliers for hours
 	#Calculate the average number of spins before making a profit (started this - commented out)
-	#Figure out how to partial clear
+	#Partial clear at endgame so it leaves the stats with 'c' inputs'
 	#Expand options at end game
 	#Insert errors for inputs outside of appropriate ranges
 		#https://stackoverflow.com/questions/41832613/python-input-validation-how-to-limit-user-input-to-a-specific-range-of-integers
-	#Find a way to graph the results visually in terminal
-	#Find a way to graph the results in a GUI
+	#Graph the results in a GUI
 	#Get the simulation to run automatically and test all variables for "bet" to find the optimized bet amount
+		#Define optimized bet
+	#Include other betting options, such as red/black
 
 
 #This is to simulate playing roulette in a casino.
@@ -38,7 +40,7 @@ while True:
 	 \___ \| | '_ ` _ \| | | | |/ _` | __/ _ \| '__|
 	  ___) | | | | | | | |_| | | (_| | || (_) | |   
 	 |____/|_|_| |_| |_|\__,_|_|\__,_|\__\___/|_|   
-	 	with statistical odds and data analysis...
+	 	with statistics, odds, and data analysis...
 	''')
 	#User input	
 	starting_cash = int(input("\nHow much money do you have?: $").replace(',', ''))
@@ -72,7 +74,7 @@ while True:
 
 		#Simulate loop for X sessions.
 		if speed == 'fast' or speed == 'f':
-			sessions = int(1000) 
+			sessions = int(21) 
 		elif speed == 'normal' or speed == 'n':
 			sessions = int(3000)
 		elif speed == 'slow' or speed == 's':
@@ -122,20 +124,20 @@ while True:
 			ending_cash = session_list[-1]
 			perm_ending.append(ending_cash)
 			
-			#Find max cash
+			#Find max profit
 			session_list.sort()
 			if (session_list[-1] - starting_cash) > 0:
-				max_profit = (session_list[-1] - starting_cash)
+				peak_profit = (session_list[-1] - starting_cash)
 			else: 
-				max_profit = 0
+				peak_profit = 0
 			
 			#Log loss for sessions with no profit
-			if ending_cash < starting_cash and max_profit == 0:
+			if ending_cash < starting_cash and peak_profit == 0:
 				perm_ending_l.append(ending_cash)
 
 			#Permanent lists
 			perm_spins.append(spin_count)
-			perm_profit.append(max_profit)
+			perm_profit.append(peak_profit)
 			perm_hours.append(hours)
 			perm_days.append(days)
 # 			perm_spinstp.append(spins_tp[-1])
@@ -144,7 +146,7 @@ while True:
 			# import csv
 			# with open('log.csv', 'a') as f:
 			# 	w = csv.writer(f, quoting=csv.QUOTE_ALL)
-			# 	w.writerow([max_profit]) #change or add variables here
+			# 	w.writerow([peak_profit]) #change or add variables here
 
 			#Reset stats on session
 			session_list = []
@@ -160,7 +162,7 @@ while True:
 		print('\nSimulations complete. Compiling data...')
 		
 		#Remove outliers
-		perm_ending.sort()
+		perm_hours.sort()
 		if speed == 'fast' or speed == 'f':
 			while len(perm_hours) > (sessions * .98):
 				del perm_hours[-1]
@@ -218,8 +220,8 @@ while True:
 		hours_limit_f = '{:,}'.format(hours_limit)
 		days_limit_f = '{:,}'.format(days_limit)
 		chance_loss = round((perm_profit.count(0) / len(perm_profit)) * 100, 1)
-		chance_bust = round((perm_ending_l.count(0) / len(perm_profit)) * 100, 1)
-		max_profit_overall = '{:,}'.format(max(perm_profit))
+		chance_bust = round((perm_ending.count(0) / len(perm_profit)) * 100, 1)
+		peak_profit_overall = '{:,}'.format(max(perm_profit))
 		median_peak_profit = perm_profit[round((len(perm_profit) / 2) - 1)]
 		median_peak_profit_f = '{:,}'.format(median_peak_profit)
 		max_hours = max(perm_hours)
@@ -229,6 +231,7 @@ while True:
 		median_loss = median_ending_l - starting_cash
 		median_hours = perm_hours[round((len(perm_hours) / 2) - 1)]
 		profit_hour = round(median_peak_profit / median_hours)
+		profit_hour_f = '{:,}'.format(profit_hour)
 		median_hours_f = '{:,}'.format(median_hours)
 		median_days_f = '{:,}'.format(perm_days[round((len(perm_days) / 2) - 1)])
 		median_loss_f = '{:,}'.format(median_loss * -1)
@@ -240,14 +243,14 @@ while True:
 		print('Bet: $' + bet_f)
 		print('Limit at table is ' + days_limit_f + ' days (at ' + hours_limit_f + ' hours per day)')
 		print('\nThe following data is compiled from ' + sessions_f + ' simulations.') 
-		print('Each simulation was played until the time limit was reached or the player went bust.')
-		p1 = f'Average time at table: {median_hours_f} hours ({median_days_f} days)'
+		print('Each simulation was played until the time limit was reached or the player could not cover their bet.')
+		p1 = f'Median time at table: {median_hours_f} hours (over {median_days_f} days)'
 		print('\n' + p1)
-		p2 = f'Max time at table: {max_hours} hours ({max_days} days)'
+		p2 = f'Max time at table: {max_hours} hours (over {max_days} days)'
 		print(p2)
-		p3 = f'Median peak profit*: ${median_peak_profit_f} (${profit_hour}/hour)'
+		p3 = f'Median peak profit*: ${median_peak_profit_f} (${profit_hour_f}/hour)'
 		print(p3)
-		p4 = f'Max peak profit*: ${max_profit_overall}'
+		p4 = f'Max peak profit*: ${peak_profit_overall}'
 		print(p4)
 		p5 = f'Player has a {round(98 * ((100 - chance_loss) / 100),1)}% chance of peaking at: >${dev1_f} profit'
 		if dev1 > 0:
@@ -271,6 +274,9 @@ while True:
 		print('\n*Peak profit is the highest cash value reached in a session') 
 		print('after subtracting the player\'s starting cash.')
 # 		print(perm_spinstp)
+		print(perm_profit)
+		print(perm_ending)
+		print(perm_ending_l)
 
 	#End of simulation
 		end_prompt = True
