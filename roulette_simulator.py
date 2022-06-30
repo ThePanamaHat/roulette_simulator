@@ -274,9 +274,9 @@ while True:
 		print('\n*Peak profit is the highest cash value reached in a session') 
 		print('after subtracting the player\'s starting cash.')
 # 		print(perm_spinstp)
-		print(perm_profit)
-		print(perm_ending)
-		print(perm_ending_l)
+#		print(perm_profit)
+#		print(perm_ending)
+#		print(perm_ending_l)
 
 	#End of simulation
 		end_prompt = True
